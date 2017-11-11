@@ -70,6 +70,9 @@ class SegmentTree
         else return (A[p1] <= A[p2])? p1: p2;
         
     }
+
+    // add the code to update
+    // explore lazy update as well
 };
 
 int main()
