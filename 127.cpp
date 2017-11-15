@@ -13,7 +13,8 @@ bool isMatch(card c1, card c2){
 
 int main(){
     string s;
-
+    // freopen("input.txt", "r", stdin);
+    // freopen("output.txt", "w", stdout);
     while(cin>>s && s != "#"){
         cards.clear();
 
@@ -28,32 +29,31 @@ int main(){
             cards.push_back(st);
         }
 
-        bool move = true;
-        while(move){
-            move = false;
-            for(int i=0; i<cards.size(); i++){
-                if(i>=3 && isMatch(cards[i].top(), cards[i-3].top())){
-                    cards[i-3].push(cards[i].top());
-                    cards[i].pop();
-                    move = true;
-                } 
-                else if (i >= 1 && isMatch(cards[i].top(), cards[i-1].top())){
-                    cards[i-1].push(cards[i].top());
-                    cards[i].pop();
-                    move = true;
-                }
-
-                if(cards[i].empty()) cards.erase(cards.begin()+i);
+        int mback;
+        for(int i=0; i<cards.size(); i++){
+            mback = 0;
+            if(i>=3 && isMatch(cards[i].top(), cards[i-3].top())){
+                cards[i-3].push(cards[i].top());
+                cards[i].pop();
+                mback = 4; //start from i-3// -4 here because i will be added 1 in for loop
+            } 
+            else if (i >= 1 && isMatch(cards[i].top(), cards[i-1].top())){
+                cards[i-1].push(cards[i].top());
+                cards[i].pop();
+                mback = 2;
             }
-        }
 
-        printf("%d piles remaining:", (int)cards.size());
+            if(cards[i].empty()) cards.erase(cards.begin()+i);
+
+            if(mback > 0) i -= mback;
+        }
+        
+        printf("%d pile%s remaining:", (int)cards.size(), ((cards.size()==1)? "": "s"));
         for(int i=0; i < cards.size(); ++i){
             cout << " " << cards[i].size();
         }
 
         cout << endl;
-
     }
 
     return 0;
