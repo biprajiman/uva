@@ -2,7 +2,7 @@
 #include <iostream>
 #include <math.h>
 #include <cstdio>
-
+//https://www.hackerearth.com/practice/notes/segment-tree-and-lazy-propagation/
 using namespace std;
 typedef vector<int> vi;
 #define REP(i, a, b) \
