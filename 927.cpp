@@ -1,13 +1,12 @@
 #include "all.h"
 
-
 int findn(int d, int k){
     int i=1; 
     int prev = 0;
     int n = 0;
     for(;;i++){
         n += d*i;
-        if(prev<k && k<=n) return n;
+        if(prev<k && k<=n) return i;// ith term is the one
         prev = n;
     }
 }
