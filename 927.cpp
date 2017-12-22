@@ -23,7 +23,31 @@ ll getVal(const int n, const vi& c){
 }
 
 int main(){
-    
+    freopen("input.txt","r",stdin);
+    freopen("output.txt","w",stdout);
+
+    int TC;
+    scanf("%d\n", &TC);
+
+    while(TC--){
+        vi C;
+        int i;
+        scanf("%d", &i);
+
+        int c;
+        for(int j=0; j<=i; j++) {
+            scanf("%d", &c);
+            C.push_back(c);
+        }
+        int d, k;
+
+        scanf("%d %d\n", &d, &k);
+        
+        int n = findn(d, k);
+
+        cout<<getVal(n, C)<<endl; 
+        
+    }
     return 0;
 }
 
