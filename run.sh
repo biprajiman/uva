@@ -1,1 +1,1 @@
-g++ -std=c++11 10976.cpp -o a
+g++ -std=c++11 10487.cpp -o a
