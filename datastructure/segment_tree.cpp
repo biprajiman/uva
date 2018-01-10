@@ -15,18 +15,50 @@ typedef vector<int> vi;
 class SegmentTree
 {
   private:
-    vi segment_tree;
+    vi segment_tree, A;
+    int left(int p){ return (p << 1); }
+    int right(int p){ return (p << 1) + 1; }
 
   public:
-    SegmentTree(int N)
+    SegmentTree(const vi _A)
     {
         // total size of array to store the tree 2*2^h + 1, 2 for left and right; 2^h, h = floor(log(N)) height of tree, +1 for root
-        int h = (int)ceil(log(N) / log(2));
-        int length = 2 * (int)pow(2.0, h);
+        //int h = (int)ceil(log(N) / log(2));
+        //int length = 2 * (int)pow(2.0, h);
+        int N = _A.size();
+        A = _A;
+        int length = 4*N; // approximate
         segment_tree.assign(length, 0); // resize and assign all the values 0
     }
 
-    void build_segment_tree(int code, int index, int A[], int b, int e)
+    void _merge(int code, int &a, int &b, int &c){ //merge information from b and c to a node
+        /*
+            int lcontent = segment_tree[leftIndex], rcontent = segment_tree[rightIndex];
+
+            if (code == RANGE_SUM)
+                segment_tree[index] = lcontent + rcontent;
+            else
+            {
+                int lValue = A[lcontent], rValue = A[rcontent];
+                if (code == RANGE_MIN)
+                    segment_tree[index] = (lValue <= rValue) ? lcontent : rcontent;
+                else
+                    segment_tree[index] = (lValue >= rValue) ? lcontent : rcontent;
+            }
+        */
+        if (code == RANGE_SUM)
+            a = b + c;
+        else
+        {
+            int lValue = A[b], rValue = A[c];
+            if (code == RANGE_MIN)
+                a = (lValue <= rValue) ? lcontent : rcontent;
+            else
+                a = (lValue >= rValue) ? lcontent : rcontent;
+        }
+    }
+
+    void build(int code, int index, int b, int e)
     {
         if (b == e)
         {
@@ -37,24 +69,32 @@ class SegmentTree
             return;
         }
 
-        int leftIndex = 2 * index, rightIndex = 2 * index + 1;
-        build_segment_tree(code, leftIndex, A, b, (b + e) / 2);
-        build_segment_tree(code, rightIndex, A, ((b + e) / 2) + 1, e);
-        int lcontent = segment_tree[leftIndex], rcontent = segment_tree[rightIndex];
+        int leftIndex = left(index), rightIndex = right(index);
 
-        if (code == RANGE_SUM)
-            segment_tree[index] = lcontent + rcontent;
-        else
-        {
-            int lValue = A[lcontent], rValue = A[rcontent];
-            if (code == RANGE_MIN)
-                segment_tree[index] = (lValue <= rValue) ? lcontent : rcontent;
-            else
-                segment_tree[index] = (lValue >= rValue) ? lcontent : rcontent;
-        }
+        build(code, leftIndex, A, b, (b + e) / 2);
+        build(code, rightIndex, A, ((b + e) / 2) + 1, e);
+        _merge(code, segment_tree[index], segment_tree[leftIndex], segment_index[righIndex]);
     }
 
-    int query(int code, int A[], int index, int b, int e, int i, int j){
+    void update(int code, int index, int b, int e, int pos){//pos defines update pos in the array A
+        if(b == e){
+            if(code == RANGE_SUM)
+                segment_tree[index] = A[pos];
+            else 
+                segment_tree[index] = pos;
+            return;
+        }
+
+        int mid = ((b+e) << 1);
+        if(pos <= mid)
+            update(code, left(index), b, mid, pos);
+        else
+            update(code, right(index), mid+1, e, pos);
+        
+        _merge(code, segment_tree[index], segment_tree[left(index)], segment_tree[right(index)]);
+    }
+
+    int query(int code, int index, int b, int e, int i, int j){
         if(i > e || j < b) return -1; // we did not find the query range here
 
         if(b >= i && e <= j) return segment_tree[index]; //found the overlapping interval
@@ -68,7 +108,6 @@ class SegmentTree
         if (code == RANGE_SUM) return p1+p2;
         else if (code == RANGE_MAX) return (A[p1] >= A[p2])? p1: p2;
         else return (A[p1] <= A[p2])? p1: p2;
-        
     }
 
     // add the code to update
@@ -77,7 +116,7 @@ class SegmentTree
 
 int main()
 {
-    int A[] = {8,7,3,9,5,1,10};
+    vi A = {8,7,3,9,5,1,10};
     SegmentTree ST(7);
     ST.build_segment_tree(RANGE_MIN, 1, A, 0, 6);
     printf("%d\n", ST.query(RANGE_MIN, A, 1, 0, 6, 1, 3)); // answer is index 2
