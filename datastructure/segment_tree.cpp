@@ -52,9 +52,9 @@ class SegmentTree
         {
             int lValue = A[b], rValue = A[c];
             if (code == RANGE_MIN)
-                a = (lValue <= rValue) ? lcontent : rcontent;
+                a = (lValue <= rValue) ? b : c;
             else
-                a = (lValue >= rValue) ? lcontent : rcontent;
+                a = (lValue >= rValue) ? b : c;
         }
     }
 
@@ -71,9 +71,9 @@ class SegmentTree
 
         int leftIndex = left(index), rightIndex = right(index);
 
-        build(code, leftIndex, A, b, (b + e) / 2);
-        build(code, rightIndex, A, ((b + e) / 2) + 1, e);
-        _merge(code, segment_tree[index], segment_tree[leftIndex], segment_index[righIndex]);
+        build(code, leftIndex, b, (b + e) / 2);
+        build(code, rightIndex, ((b + e) / 2) + 1, e);
+        _merge(code, segment_tree[index], segment_tree[leftIndex], segment_tree[rightIndex]);
     }
 
     void update(int code, int index, int b, int e, int pos){//pos defines update pos in the array A
@@ -85,7 +85,7 @@ class SegmentTree
             return;
         }
 
-        int mid = ((b+e) << 1);
+        int mid = ((b+e) >> 1);
         if(pos <= mid)
             update(code, left(index), b, mid, pos);
         else
@@ -99,8 +99,8 @@ class SegmentTree
 
         if(b >= i && e <= j) return segment_tree[index]; //found the overlapping interval
 
-        int p1 = query(code, A, 2*index, b, (b+e)/2, i, j);
-        int p2 = query(code, A, 2*index+1, (b+e)/2+1, e, i, j);
+        int p1 = query(code, 2*index, b, (b+e)/2, i, j);
+        int p2 = query(code, 2*index+1, (b+e)/2+1, e, i, j);
 
         if(p1 == -1) return p2;
         if(p2 == -1) return p1;
@@ -117,8 +117,8 @@ class SegmentTree
 int main()
 {
     vi A = {8,7,3,9,5,1,10};
-    SegmentTree ST(7);
-    ST.build_segment_tree(RANGE_MIN, 1, A, 0, 6);
-    printf("%d\n", ST.query(RANGE_MIN, A, 1, 0, 6, 1, 3)); // answer is index 2
+    SegmentTree ST(A);
+    ST.build(RANGE_MIN, 1, 0, 6);
+    printf("%d\n", ST.query(RANGE_MIN, 1, 0, 6, 1, 3)); // answer is index 2
     return 0;
 }

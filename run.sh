@@ -1,1 +1,1 @@
-g++ -std=c++11 10487.cpp -o a
+g++ -std=c++11 ./DP/10130-01knapsack.cpp -o a
